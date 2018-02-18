@@ -8,7 +8,7 @@ here = path.abspath(path.dirname(__file__))
 #    long_description = f.read()
 
 setup(
-    name='inju',
+    name='indana',
     version='0.1.0',
     description='provides some helpers to easier create interactive elements in IPython Notebooks',
 #    long_description=long_description,
