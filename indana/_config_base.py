@@ -35,9 +35,13 @@ class ConfigBase:
     def register_submit(self, cb):
         self._cb_submit_user.append(cb)
 
-    def _cb_submit(self, sender):
+    @property
+    def current_values(self):
         values = {}
         for field in self._config["fields"]:
             values[field["name"]] = field["type"](field["txt_value"].value)
+        return values
+
+    def _cb_submit(self, sender):
         for cb in self._cb_submit_user:
-            cb(values)
+            cb(self.current_values)
