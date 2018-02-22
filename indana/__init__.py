@@ -1,1 +1,1 @@
-from inju._table_form import TableForm
+from indana._table_form import TableForm

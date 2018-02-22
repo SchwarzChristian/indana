@@ -1,24 +1,21 @@
-import pandas as pd
-from IPython.display import display, clear_output
-from ipywidgets import widgets
 from os import path
 
-class TableForm:
+from IPython.display import display, clear_output
+from ipywidgets import widgets
+import pandas as pd
+
+from indana._config_base import ConfigBase
+
+class TableForm(ConfigBase):
     def __init__(self, config):
-        self._config = config
+        ConfigBase.__init__(self, config)
 
         if path.isfile(self._config["filename"]):
             self._data = pd.read_csv(self._config["filename"])
         else:
             self._data = pd.DataFrame()
         
-        self._boxes = []
-        for field in self._config["fields"]:
-            field["txt_value"] = widgets.Text()
-            self._boxes.append(widgets.Box([
-                widgets.Label(field["name"]),
-                field["txt_value"],
-            ]))
+        self.register_submit(self._cb_submit_tbl)
 
     @property
     def data(self):
@@ -28,22 +25,13 @@ class TableForm:
         clear_output()
 
         display(self._data)
-        for field in self._config["fields"]:
-            field["txt_value"].value = field["default"] if "default" in field else ""
         
-        for box in self._boxes:
-            display(box)
+        ConfigBase.render_form(self, clear=False)
 
-        btn_submit = widgets.Button(description="submit")
         btn_clear = widgets.Button(description="clear")
-
-        btn_submit.on_click(self._cb_submit)
         btn_clear.on_click(self._cb_clear)
+        display(btn_clear)
 
-        display(widgets.Box([
-            btn_submit,
-            btn_clear,
-        ]))
         if len(self._data) > 1:
             for plot in self._config["plots"]:
                 self._data.plot(**plot)
@@ -51,17 +39,12 @@ class TableForm:
     def _save(self):
         self._data.to_csv(self._config["filename"], index=False)
         
-    def _cb_submit(self, sender):
-        new_row = {}
-        for field in self._config["fields"]:
-            new_row[field["name"]] = field["type"](field["txt_value"].value)
-
-        self._data = self._data.append(new_row, ignore_index=True)
+    def _cb_submit_tbl(self, values):
+        self._data = self._data.append(values, ignore_index=True)
         self._save()
         self.render_form()
-
+        
     def _cb_clear(self, sender):
         self._data = pd.DataFrame()
         self._save()
         self.render_form()
-    
