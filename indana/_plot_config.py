@@ -7,15 +7,19 @@ class PlotConfig(AlgorithmConfig):
                 {
                     "name": "x",
                     "type": str,
-                    "default": "x",
+                    "values": list(data.columns.values),
                 }, {
                     "name": "y",
                     "type": str,
-                    "default": "y",
+                    "values": list(data.columns.values),
                 }, {
                     "name": "kind",
                     "type": str,
-                    "default": "scatter",
+                    "values": [
+                        "scatter",
+                        "line",
+                        "bar",
+                    ]
                 }
             ]
         }
