@@ -11,8 +11,8 @@ class AlgorithmConfig(ConfigBase):
     algorithm: method to run
     config: parameter configuration
     """
-    def __init__(self, algorithm, config):
-        ConfigBase.__init__(self, config)
+    def __init__(self, algorithm, fields, submit_name="run"):
+        ConfigBase.__init__(self, { "fields": fields }, submit_name=submit_name)
         self._algorithm = algorithm
         self.register_submit(self.run)
 
